@@ -7,13 +7,17 @@ Policy-as-code enforcement of the machine-checkable controls in
 ## Run
 
 ```bash
+python tools/generate_artifacts.py   # regenerates data.json from the CSV
 conftest test examples/sample_input.json -p controls/policies
+opa test controls/policies -v        # unit tests for the policy itself
 ```
 
-`governance.rego` denies when a required control (encryption, input/output
-moderation, audit logging, access control, rate limiting) is neither
-`satisfied` nor explicitly `not_applicable`, and when a `satisfied` control
-carries no `evidence`.
+`governance.rego` denies when a required control is neither `satisfied` nor
+explicitly `not_applicable`, and when a `satisfied` control carries no
+`evidence`. The required-control list isn't hardcoded here — it's
+`data.required_controls`, generated from the `Enforced in CI` column of the
+catalog CSV, so it can't drift from the catalog the way a hand-maintained
+list could.
 
 ## Input shape
 
@@ -21,4 +25,5 @@ carries no `evidence`.
 { "controls": { "AIGOV-003": { "status": "satisfied", "evidence": "KMS" } } }
 ```
 
-Wire `conftest test` into CI to block deploys that drop a required control.
+This is wired into CI (`.github/workflows/ci.yml`) and blocks the build when
+it fails.

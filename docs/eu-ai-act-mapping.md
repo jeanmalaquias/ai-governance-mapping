@@ -7,18 +7,26 @@ Section 2. Classify your system first — not every system is high-risk.
 
 Mappings are interpretive aids, not legal advice.
 
-| Article | Obligation | Unified controls |
-|---|---|---|
-| Art. 9 | Risk management system | AIGOV-001 |
-| Art. 10 | Data and data governance | AIGOV-002, AIGOV-004, AIGOV-014, AIGOV-016 |
-| Art. 11 | Technical documentation | AIGOV-008 |
-| Art. 12 | Record-keeping (logging) | AIGOV-009 |
-| Art. 13 | Transparency to deployers | AIGOV-008 |
-| Art. 14 | Human oversight | AIGOV-005 |
-| Art. 15 | Accuracy, robustness, cybersecurity | AIGOV-003, AIGOV-006, AIGOV-007, AIGOV-010, AIGOV-011, AIGOV-015 |
-| Art. 25 | Responsibilities along the value chain | AIGOV-013 |
-| Art. 72 | Post-market monitoring | AIGOV-011, AIGOV-012 |
-| Art. 73 | Reporting of serious incidents | AIGOV-012 |
+<!-- AUTOGEN:START -->
+| Control | Citation |
+| --- | --- |
+| AIGOV-001 AI risk assessment before deployment | Art. 9 (risk management system) |
+| AIGOV-002 Data governance and provenance | Art. 10 (data and data governance) |
+| AIGOV-003 Encryption at rest | Art. 15 (accuracy robustness cybersecurity) |
+| AIGOV-004 Data retention and minimization | Art. 10; GDPR Art. 5(1)(e) |
+| AIGOV-005 Human oversight | Art. 14 (human oversight) |
+| AIGOV-006 Prompt-injection and input moderation | Art. 15 (cybersecurity) |
+| AIGOV-007 Output handling and content safety | Art. 15 |
+| AIGOV-008 Transparency and model documentation | Art. 13 (transparency); Art. 11 (technical documentation) |
+| AIGOV-009 Audit logging of AI interactions | Art. 12 (record-keeping/logging) |
+| AIGOV-010 Access control and least privilege | Art. 15 (cybersecurity) |
+| AIGOV-011 Evaluation and drift monitoring | Art. 15 (accuracy); Art. 72 |
+| AIGOV-012 Incident response and post-market monitoring | Art. 72 (post-market monitoring); Art. 73 (incident reporting) |
+| AIGOV-013 Supply-chain and model provenance | Art. 25 (obligations along the value chain) |
+| AIGOV-014 PII detection and sensitive-data handling | Art. 10; GDPR Arts. 5 25 |
+| AIGOV-015 Rate limiting and resource controls | Art. 15 (robustness) |
+| AIGOV-016 Bias and fairness testing | Art. 10(2)(f) (bias examination) |
+<!-- AUTOGEN:END -->
 
 **GPAI note:** providers of general-purpose AI models carry separate
 obligations (Arts. 53–55) — technical documentation, copyright policy, and

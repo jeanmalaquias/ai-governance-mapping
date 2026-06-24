@@ -7,7 +7,9 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel
 
-from .catalog import Control, load_catalog
+from .catalog import Control, load_catalog, load_catalog_version
+
+VALID_RISK_TIERS = {"high", "limited", "minimal"}
 
 
 class ControlResult(BaseModel):
@@ -24,6 +26,7 @@ class GapReport(BaseModel):
 
     project: str
     results: list[ControlResult]
+    catalog_version: str = ""
 
     @property
     def gaps(self) -> list[ControlResult]:
@@ -45,9 +48,16 @@ def load_project(path: str | Path) -> dict:
     return yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
 
 
-def _classify(declared: dict | None) -> ControlResult | tuple[str, str]:
+def _classify(
+    declared: dict | None, control: Control, project_tier: str, version: str
+) -> tuple[str, str]:
     """Return (state, detail) for one control's declaration."""
     if not declared:
+        if project_tier not in control.risk_tiers:
+            return (
+                "waived",
+                f"not applicable at risk_tier={project_tier} (catalog v{version})",
+            )
         return "gap", "not addressed"
     status = declared.get("status")
     if status == "satisfied":
@@ -61,16 +71,31 @@ def _classify(declared: dict | None) -> ControlResult | tuple[str, str]:
     return "gap", f"unrecognized status '{status}'"
 
 
-def evaluate(project: dict, catalog: list[Control] | None = None) -> GapReport:
+def evaluate(
+    project: dict,
+    catalog: list[Control] | None = None,
+    catalog_version: str | None = None,
+) -> GapReport:
     """Check declared controls against the catalog and produce a gap report."""
     controls = catalog if catalog is not None else load_catalog()
+    version = catalog_version if catalog_version is not None else load_catalog_version()
     declared = project.get("controls", {})
+    project_tier = project.get("risk_tier", "high")
+    if project_tier not in VALID_RISK_TIERS:
+        raise ValueError(
+            f"unknown risk_tier '{project_tier}'; expected one of "
+            f"{sorted(VALID_RISK_TIERS)}"
+        )
     results: list[ControlResult] = []
     for control in controls:
-        state, detail = _classify(declared.get(control.id))
+        state, detail = _classify(
+            declared.get(control.id), control, project_tier, version
+        )
         results.append(
             ControlResult(
                 id=control.id, control=control.control, state=state, detail=detail
             )
         )
-    return GapReport(project=project.get("name", "unnamed"), results=results)
+    return GapReport(
+        project=project.get("name", "unnamed"), results=results, catalog_version=version
+    )

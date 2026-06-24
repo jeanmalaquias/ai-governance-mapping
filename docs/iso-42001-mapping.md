@@ -7,19 +7,26 @@ gives implementation guidance.
 
 Mappings are interpretive aids, not a certification claim.
 
-| ISO 42001 clause / Annex A | Theme | Unified controls |
-|---|---|---|
-| Clause 6.1 | Actions to address risks and opportunities | AIGOV-001 |
-| A.5.2 | AI risk assessment | AIGOV-001 |
-| A.6.2.4 | AI system verification and validation | AIGOV-003, AIGOV-011, AIGOV-016 |
-| A.6.2.5 | AI system deployment | AIGOV-010 |
-| A.6.2.6 | AI system operation and monitoring | AIGOV-006, AIGOV-007, AIGOV-012, AIGOV-015 |
-| A.6.2.7 | AI system technical documentation | AIGOV-011 |
-| A.6.2.8 | AI system recording of event logs | AIGOV-009 |
-| A.7.2–A.7.3 | Data for AI systems / acquisition and quality | AIGOV-002, AIGOV-004, AIGOV-014 |
-| A.8.2 | Information for interested parties | AIGOV-008 |
-| A.9.2 | Use and oversight responsibilities | AIGOV-005 |
-| A.10 | Third-party and supplier relationships | AIGOV-012, AIGOV-013 |
+<!-- AUTOGEN:START -->
+| Control | Citation |
+| --- | --- |
+| AIGOV-001 AI risk assessment before deployment | Clause 6.1; A.5.2 |
+| AIGOV-002 Data governance and provenance | A.7.2; A.7.3 |
+| AIGOV-003 Encryption at rest | A.6.2.4 |
+| AIGOV-004 Data retention and minimization | A.7.2 |
+| AIGOV-005 Human oversight | A.9.2 |
+| AIGOV-006 Prompt-injection and input moderation | A.6.2.6 |
+| AIGOV-007 Output handling and content safety | A.6.2.6 |
+| AIGOV-008 Transparency and model documentation | A.8.2 |
+| AIGOV-009 Audit logging of AI interactions | A.6.2.8 |
+| AIGOV-010 Access control and least privilege | A.6.2.5 |
+| AIGOV-011 Evaluation and drift monitoring | A.6.2.4; A.6.2.7 |
+| AIGOV-012 Incident response and post-market monitoring | A.6.2.6; A.10 |
+| AIGOV-013 Supply-chain and model provenance | A.7.3; A.10 |
+| AIGOV-014 PII detection and sensitive-data handling | A.7.2 |
+| AIGOV-015 Rate limiting and resource controls | A.6.2.6 |
+| AIGOV-016 Bias and fairness testing | A.6.2.4 |
+<!-- AUTOGEN:END -->
 
 ISO/IEC 42001 is the umbrella process standard; the NIST AI RMF supplies the
 risk method and the EU AI Act supplies the legal obligations that the AIMS

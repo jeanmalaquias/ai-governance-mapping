@@ -10,14 +10,10 @@ package main
 import rego.v1
 
 # Controls that must be enforced in code for any deployed LLM system.
-required_controls := {
-	"AIGOV-003", # encryption at rest
-	"AIGOV-006", # prompt-injection / input moderation
-	"AIGOV-007", # output handling / content safety
-	"AIGOV-009", # audit logging
-	"AIGOV-010", # access control / least privilege
-	"AIGOV-015", # rate limiting / resource controls
-}
+# Generated into controls/policies/data.json by tools/generate_artifacts.py
+# from the "Enforced in CI" column of controls/unified_controls.csv — do not
+# hardcode IDs here, they will drift from the catalog.
+required_controls := data.required_controls
 
 satisfied(id) if input.controls[id].status == "satisfied"
 

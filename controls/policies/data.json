@@ -1,0 +1,11 @@
+{
+  "required_controls": [
+    "AIGOV-003",
+    "AIGOV-006",
+    "AIGOV-007",
+    "AIGOV-009",
+    "AIGOV-010",
+    "AIGOV-015"
+  ],
+  "catalog_version": "1.1.0"
+}

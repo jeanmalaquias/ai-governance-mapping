@@ -87,7 +87,10 @@ satisfied: 15  waived: 1  gaps: 0
 No gaps. All applicable controls satisfied or waived.
 ```
 
-The command exits **non-zero when gaps remain**, so it drops into CI as a gate.
+The command exits `0` when every control is satisfied or waived, `1` when gaps
+remain, and `2` for an invalid project config (e.g. an unrecognized
+`risk_tier`) — so it drops into CI as a gate, and a config error is
+distinguishable from a real compliance gap.
 Point it at your own project file, or override the catalog with `--catalog`.
 
 ## Project config format
@@ -105,6 +108,11 @@ controls:
 - `status: satisfied` **requires** an `evidence` string, else it's a gap.
 - `status: not_applicable` **requires** a `reason`, else it's a gap.
 - Omitted controls are gaps ("not addressed").
+- An optional top-level `risk_tier: high|limited|minimal` (default `high`)
+  scopes which controls apply. A control whose catalog `Risk Tiers` doesn't
+  include the project's tier is auto-waived when omitted — but an explicit
+  `status:` declaration always wins over the auto-waiver, so you can still
+  address a control by hand even outside your declared tier.
 
 ## Policy-as-code (OPA / conftest)
 
@@ -116,8 +124,11 @@ conftest test examples/sample_input.json -p controls/policies
 
 `governance.rego` denies when a required control (encryption, input/output
 moderation, audit logging, access control, rate limiting) is neither satisfied
-nor explicitly waived, or is satisfied without evidence. Wire it into CI to
-block deploys.
+nor explicitly waived, or is satisfied without evidence. The required-control
+list is generated from the catalog's `Enforced in CI` column
+(`tools/generate_artifacts.py` → `controls/policies/data.json`), not
+hardcoded — and it's wired into CI (`.github/workflows/ci.yml`) to block
+the build on failure.
 
 ## Frameworks covered
 
@@ -143,9 +154,12 @@ articles/                    # deep-dive drafts
 ## Testing
 
 ```bash
-pytest --cov --cov-report=term-missing   # 7 tests, 100% source coverage
+pytest --cov --cov-report=term-missing   # tests, 100% source coverage
 ruff check .
+python tools/generate_artifacts.py && git diff --exit-code   # generated artifacts must match the CSV
+opa test controls/policies -v
 compliance-check examples/sample_project.yaml   # the example must pass (exit 0)
+conftest test examples/sample_input.json -p controls/policies
 ```
 
 ## Scope & disclaimer

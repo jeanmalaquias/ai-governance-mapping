@@ -13,13 +13,32 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install
+      - name: Install Python deps
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
+      - name: Install OPA
+        uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+      - name: Install conftest
+        run: |
+          CONFTEST_VERSION=$(curl -s https://api.github.com/repos/open-policy-agent/conftest/releases/latest | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+          curl -sL "https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz" -o conftest.tar.gz
+          tar xzf conftest.tar.gz conftest
+          sudo mv conftest /usr/local/bin/
+          conftest --version
+      - name: Regenerate artifacts and check for drift
+        run: |
+          python tools/generate_artifacts.py
+          git diff --exit-code -- controls/policies/data.json docs/*.md
+      - name: OPA policy unit tests
+        run: opa test controls/policies -v
       - name: Lint
         run: ruff check .
       - name: Test
         run: pytest --cov --cov-report=term-missing
       - name: Compliance gate (example)
         run: compliance-check examples/sample_project.yaml
+      - name: Conftest policy gate (example)
+        run: conftest test examples/sample_input.json -p controls/policies

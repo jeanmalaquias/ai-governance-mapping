@@ -1,4 +1,5 @@
 name: Sample RAG Service
+risk_tier: high  # default; shown explicitly here since this is the reference example
 # Declares how each catalog control is addressed. `compliance-check` compares
 # this against controls/unified_controls.csv and reports gaps.
 controls:
